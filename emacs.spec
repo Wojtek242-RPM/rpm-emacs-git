@@ -5,7 +5,7 @@ Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
 Version:       27.2
-Release:       1%{?dist}
+Release:       2%{?dist}
 License:       GPLv3+ and CC0-1.0
 URL:           http://www.gnu.org/software/emacs/
 Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
@@ -21,7 +21,6 @@ Source6:       default.el
 # Emacs Terminal Mode, #551949, #617355
 Source7:       emacs-terminal.desktop
 Source8:       emacs-terminal.sh
-Source9:       emacs.service
 Source10:      %{name}.appdata.xml
 # rhbz#713600
 Patch1:        emacs-spellchecker.patch
@@ -366,10 +365,11 @@ install -p -m 755 %SOURCE8 %{buildroot}%{_bindir}/emacs-terminal
 rm -f %{buildroot}%{_infodir}/dir
 
 # Installing service file
-mkdir -p %{buildroot}%{_userunitdir}
-install -p -m 0644 %SOURCE9 %{buildroot}%{_userunitdir}/emacs.service
 # Emacs 26.1 installs the upstream unit file to /usr/lib64 on 64bit archs, we don't want that
-rm -f %{buildroot}/usr/lib64/systemd/user/emacs.service
+if [[ -f %{buildroot}/usr/lib64/systemd/user/emacs.service ]]; then
+   mkdir -p %{buildroot}%{_userunitdir}
+   mv %{buildroot}/usr/lib64/systemd/user/emacs.service %{buildroot}%{_userunitdir}/emacs.service
+fi
 
 # Install desktop files
 mkdir -p %{buildroot}%{_datadir}/applications
@@ -485,6 +485,9 @@ rm %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document23.svg
 %{_includedir}/emacs-module.h
 
 %changelog
+* Sat Mar 27 2021 Peter Oliver <rpm@mavit.org.uk> - 1:27.2-2
+- Prefer upstream systemd service definition.
+
 * Thu Mar 27 2021 Bhavin Gandhi <bhavin7392@gmail.com> - 1:27.2-1
 - emacs-27.2 is available
 
