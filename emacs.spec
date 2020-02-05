@@ -26,6 +26,7 @@ Source10:      %{name}.appdata.xml
 Patch1:        emacs-spellchecker.patch
 Patch2:        emacs-system-crypto-policies.patch
 Patch3:        emacs-glibc-2.34.patch
+Patch4:        emacs-libdir-vs-systemd.patch
 
 BuildRequires: gcc
 BuildRequires: atk-devel
@@ -190,6 +191,7 @@ Development header files for Emacs.
 %patch1 -p1 -b .spellchecker
 %patch2 -p1 -b .system-crypto-policies
 %patch3 -p1 -b .glibc2.34
+%patch4 -p1 -b .libdir-vs-systemd
 autoconf
 
 # We prefer our emacs.desktop file
@@ -364,12 +366,8 @@ install -p -m 755 %SOURCE8 %{buildroot}%{_bindir}/emacs-terminal
 # After everything is installed, remove info dir
 rm -f %{buildroot}%{_infodir}/dir
 
-# Installing service file
-# Emacs 26.1 installs the upstream unit file to /usr/lib64 on 64bit archs, we don't want that
-if [[ -f %{buildroot}/usr/lib64/systemd/user/emacs.service ]]; then
-   mkdir -p %{buildroot}%{_userunitdir}
-   mv %{buildroot}/usr/lib64/systemd/user/emacs.service %{buildroot}%{_userunitdir}/emacs.service
-fi
+# Remove duplicate emacs.service file
+rm %{buildroot}%{_datadir}/%{name}/%{version}/etc/%{name}.service
 
 # Install desktop files
 mkdir -p %{buildroot}%{_datadir}/applications
