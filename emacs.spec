@@ -5,7 +5,7 @@ Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
 Version:       27.1
-Release:       1%{?dist}
+Release:       2%{?dist}
 License:       GPLv3+ and CC0-1.0
 URL:           http://www.gnu.org/software/emacs/
 Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
@@ -292,7 +292,7 @@ EOF
 
 %install
 cd build-gtk
-make install INSTALL="%{__install} -p" DESTDIR=%{buildroot}
+%make_install
 cd ..
 
 # Let alternatives manage the symlink
@@ -482,6 +482,10 @@ rm %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document23.svg
 %{_includedir}/emacs-module.h
 
 %changelog
+* Tue Aug 18 2020 Jan Synáček <jsynacek@redhat.com> - 1:27.1-2
+- use make macros (original patch provided by Tom Stellard)
+- https://fedoraproject.org/wiki/Changes/UseMakeBuildInstallMacro
+
 * Tue Aug 11 2020 Bhavin Gandhi <bhavin7392@gmail.com> - 1:27.1-1
 - emacs-27.1 is available (#1867841)
 - Add systemd-devel to support Type=notify in unit file
