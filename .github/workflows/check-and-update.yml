@@ -1,0 +1,24 @@
+name: Check and Update
+
+on:
+  push:
+    branches: [ emacs-git ]
+  schedule:
+    - cron: "0 1 * * *"
+
+jobs:
+  check-and-update:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Check and update
+      run: |
+        ./check-and-update.sh
+        if git diff --exit-code; then
+          echo "Nothing to commit, working tree clean"
+        else
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "New git revision" -a
+          git push
+        fi

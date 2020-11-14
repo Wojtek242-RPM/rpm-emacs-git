@@ -1,19 +1,24 @@
 %global _hardened_build 1
 
+%define build_timestamp %(date +"%Y%m%d")
+
+%define git_revision 36431e16799872e84161d46e66057b05289a1335
+%define git_revision_short %(echo %{git_revision} | head -c 14)
+
 # This file is encoded in UTF-8.  -*- coding: utf-8 -*-
 Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
-Version:       27.2
-Release:       3%{?dist}
+Version:       28.0.50
+Release:       1.%{build_timestamp}git%{git_revision_short}%{?dist}
 License:       GPLv3+ and CC0-1.0
 URL:           http://www.gnu.org/software/emacs/
-Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
-Source1:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz.sig
+Source0:       https://github.com/emacs-mirror/emacs/archive/%{git_revision}.tar.gz#/%{name}-%{version}-%{git_revision}.tar.gz
+# Source1:       https://ftp.gnu.org/gnu/emacs/emacs-%%{version}.tar.xz.sig
 # generate the keyring via:
 # wget https://ftp.gnu.org/gnu/gnu-keyring.gpg
 # gpg2 --keyring ./gnu-keyring.gpg --armor --export E6C9029C363AD41D787A8EBB91C1262F01EB8D39 > gpgkey-E6C9029C363AD41D787A8EBB91C1262F01EB8D39.gpg
-Source2:       gpgkey-E6C9029C363AD41D787A8EBB91C1262F01EB8D39.gpg
+# Source2:       gpgkey-E6C9029C363AD41D787A8EBB91C1262F01EB8D39.gpg
 Source3:       emacs.desktop
 Source4:       dotemacs.el
 Source5:       site-start.el
@@ -77,6 +82,10 @@ BuildRequires: gnupg2
 
 # For lucid
 BuildRequires: Xaw3d-devel
+
+# For docs
+BuildRequires: texinfo-tex
+BuildRequires: texlive-eurosym
 
 %ifarch %{ix86}
 BuildRequires: util-linux
@@ -186,15 +195,15 @@ Summary: Development header files for Emacs
 Development header files for Emacs.
 
 %prep
-%{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
-%setup -q
+# %%{gpgverify} --keyring='%%{SOURCE2}' --signature='%%{SOURCE1}' --data='%%{SOURCE0}'
+%setup -q -n emacs-%{git_revision}
 
 %patch1 -p1 -b .spellchecker
 %patch2 -p1 -b .system-crypto-policies
 %patch3 -p1 -b .glibc2.34
 %patch4 -p1 -b .libdir-vs-systemd
 %patch5 -p1
-autoconf
+./autogen.sh
 
 # We prefer our emacs.desktop file
 cp %SOURCE3 etc/emacs.desktop
@@ -207,6 +216,9 @@ grep -v "pong.elc" lisp/Makefile.in > lisp/Makefile.in.new \
 # Avoid trademark issues
 rm -f lisp/play/tetris.el lisp/play/tetris.elc
 rm -f lisp/play/pong.el lisp/play/pong.el
+
+# Since we are building from the git repo we must also build the info files.
+make docs
 
 # Sorted list of info files
 %define info_files ada-mode auth autotype bovine calc ccmode cl dbus dired-x ebrowse ede ediff edt efaq-w32 efaq eieio eintr elisp emacs-gnutls emacs-mime emacs epa erc ert eshell eudc eww flymake forms gnus htmlfontify idlwave ido info mairix-el message mh-e newsticker nxml-mode octave-mode org pcl-cvs pgg rcirc reftex remember sasl sc semantic ses sieve smtpmail speedbar srecode todo-mode tramp url vhdl-mode vip viper widget wisent woman
@@ -249,7 +261,7 @@ LDFLAGS=-Wl,-z,relro;  export LDFLAGS;
 %configure --with-dbus --with-gif --with-jpeg --with-png --with-rsvg \
            --with-tiff --with-xft --with-xpm --with-x-toolkit=gtk3 --with-gpm=no \
            --with-xwidgets --with-modules --with-harfbuzz --with-cairo --with-json
-make bootstrap
+make bootstrap -j $(nproc --all)
 %{setarch} %make_build
 cd ..
 
@@ -262,7 +274,7 @@ LDFLAGS=-Wl,-z,relro;  export LDFLAGS;
 %configure --with-dbus --with-gif --with-jpeg --with-png --with-rsvg \
            --with-tiff --with-xft --with-xpm --with-x-toolkit=lucid --with-gpm=no \
            --with-modules --with-harfbuzz --with-cairo --with-json
-make bootstrap
+make bootstrap -j $(nproc --all)
 %{setarch} %make_build
 cd ..
 
@@ -298,12 +310,15 @@ EOF
 
 %install
 cd build-gtk
-%make_install
+%make_install -j $(nproc --all)
 cd ..
 
 # Let alternatives manage the symlink
 rm %{buildroot}%{_bindir}/emacs
 touch %{buildroot}%{_bindir}/emacs
+
+# Remove the emacsclient desktop file
+rm %{buildroot}%{_datadir}/applications/emacsclient.desktop
 
 # Remove emacs.pdmp from common
 rm %{buildroot}%{emacs_libexecdir}/emacs.pdmp
