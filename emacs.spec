@@ -80,6 +80,7 @@ BuildRequires: Xaw3d-devel
 %ifarch %{ix86}
 BuildRequires: util-linux
 %endif
+BuildRequires: make
 
 
 # Emacs doesn't run without dejavu-sans-mono-fonts, rhbz#732422
