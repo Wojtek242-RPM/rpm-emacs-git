@@ -5,7 +5,7 @@ Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
 Version:       27.1
-Release:       3%{?dist}
+Release:       4%{?dist}
 License:       GPLv3+ and CC0-1.0
 URL:           http://www.gnu.org/software/emacs/
 Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
@@ -145,6 +145,7 @@ License:       GPLv3+ and GFDL and BSD
 Requires(preun): %{_sbindir}/alternatives
 Requires(posttrans): %{_sbindir}/alternatives
 Requires:      %{name}-filesystem = %{epoch}:%{version}-%{release}
+Recommends:    enchant2
 Provides:      %{name}-el = %{epoch}:%{version}-%{release}
 Obsoletes:     emacs-el < 1:24.3-29
 
@@ -483,6 +484,9 @@ rm %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document23.svg
 %{_includedir}/emacs-module.h
 
 %changelog
+* Fri Feb 05 2021 Peter Oliver <rpm@mavit.org.uk> - 1:27.1-4
+- Make Enchant the default for ispell-program-name when available.
+
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1:27.1-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
