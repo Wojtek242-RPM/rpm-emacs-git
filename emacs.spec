@@ -4,16 +4,17 @@
 Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
-Version:       27.2
-Release:       3%{?dist}
+Version:       27.1
+Release:       4%{?dist}
 License:       GPLv3+ and CC0-1.0
 URL:           http://www.gnu.org/software/emacs/
 Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
 Source1:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz.sig
 # generate the keyring via:
 # wget https://ftp.gnu.org/gnu/gnu-keyring.gpg
-# gpg2 --keyring ./gnu-keyring.gpg --armor --export E6C9029C363AD41D787A8EBB91C1262F01EB8D39 > gpgkey-E6C9029C363AD41D787A8EBB91C1262F01EB8D39.gpg
-Source2:       gpgkey-E6C9029C363AD41D787A8EBB91C1262F01EB8D39.gpg
+# gpg2 --import gnu-keyring.gpg
+# gpg2 --armor --export D405AA2C862C54F17EEE6BE0E8BCD7866AFCF978 > gpgkey-D405AA2C862C54F17EEE6BE0E8BCD7866AFCF978.gpg
+Source2:       gpgkey-D405AA2C862C54F17EEE6BE0E8BCD7866AFCF978.gpg
 Source3:       emacs.desktop
 Source4:       dotemacs.el
 Source5:       site-start.el
@@ -26,7 +27,6 @@ Source10:      %{name}.appdata.xml
 # rhbz#713600
 Patch1:        emacs-spellchecker.patch
 Patch2:        emacs-system-crypto-policies.patch
-Patch3:        https://lists.gnu.org/archive/html/bug-gnu-emacs/2021-04/txt0tY7uKvJKS.txt#./emacs-modula2.patch
 
 BuildRequires: gcc
 BuildRequires: atk-devel
@@ -145,6 +145,7 @@ License:       GPLv3+ and GFDL and BSD
 Requires(preun): %{_sbindir}/alternatives
 Requires(posttrans): %{_sbindir}/alternatives
 Requires:      %{name}-filesystem = %{epoch}:%{version}-%{release}
+Recommends:    enchant2
 Provides:      %{name}-el = %{epoch}:%{version}-%{release}
 Obsoletes:     emacs-el < 1:24.3-29
 
@@ -189,7 +190,6 @@ Development header files for Emacs.
 
 %patch1 -p1 -b .spellchecker
 %patch2 -p1 -b .system-crypto-policies
-%patch3 -p1
 autoconf
 
 # We prefer our emacs.desktop file
@@ -400,33 +400,33 @@ cat el-*-files common-lisp-dir-files > el-filelist
 rm %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document23.svg
 
 %preun
-%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version} || :
+%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version}
 
 %posttrans
-%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version} 80 || :
+%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version} 80
 
 %preun lucid
-%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version}-lucid || :
-%{_sbindir}/alternatives --remove emacs-lucid %{_bindir}/emacs-%{version}-lucid || :
+%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version}-lucid
+%{_sbindir}/alternatives --remove emacs-lucid %{_bindir}/emacs-%{version}-lucid
 
 %posttrans lucid
-%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version}-lucid 70 || :
-%{_sbindir}/alternatives --install %{_bindir}/emacs-lucid emacs-lucid %{_bindir}/emacs-%{version}-lucid 60 || :
+%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version}-lucid 70
+%{_sbindir}/alternatives --install %{_bindir}/emacs-lucid emacs-lucid %{_bindir}/emacs-%{version}-lucid 60
 
 %preun nox
-%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version}-nox || :
-%{_sbindir}/alternatives --remove emacs-nox %{_bindir}/emacs-%{version}-nox || :
+%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version}-nox
+%{_sbindir}/alternatives --remove emacs-nox %{_bindir}/emacs-%{version}-nox
 
 %posttrans nox
-%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version}-nox 70 || :
-%{_sbindir}/alternatives --install %{_bindir}/emacs-nox emacs-nox %{_bindir}/emacs-%{version}-nox 60 || :
+%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version}-nox 70
+%{_sbindir}/alternatives --install %{_bindir}/emacs-nox emacs-nox %{_bindir}/emacs-%{version}-nox 60
 
 %preun common
-%{_sbindir}/alternatives --remove emacs.etags %{_bindir}/etags.emacs || :
+%{_sbindir}/alternatives --remove emacs.etags %{_bindir}/etags.emacs
 
 %posttrans common
 %{_sbindir}/alternatives --install %{_bindir}/etags emacs.etags %{_bindir}/etags.emacs 80 \
-       --slave %{_mandir}/man1/etags.1.gz emacs.etags.man %{_mandir}/man1/etags.emacs.1.gz || :
+       --slave %{_mandir}/man1/etags.1.gz emacs.etags.man %{_mandir}/man1/etags.emacs.1.gz
 
 %files
 %{_bindir}/emacs-%{version}
@@ -484,16 +484,8 @@ rm %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document23.svg
 %{_includedir}/emacs-module.h
 
 %changelog
-* Sun Jun 13 2021 Dan Čermák <dan.cermak@cgc-instruments.com> - 1:27.2-3
-- Swallow %%preun and %%posttrans scriptlet exit status
-- Fixes rhbz#1962181
-
-* Mon Apr 26 2021 Dan Čermák <dan.cermak@cgc-instruments.com> - 1:27.2-2
-- Add emacs-modula2.patch
-- Fixes rhbz#1950158
-
-* Thu Mar 25 2021 Bhavin Gandhi <bhavin7392@gmail.com> - 1:27.2-1
-- emacs-27.2 is available
+* Fri Feb 05 2021 Peter Oliver <rpm@mavit.org.uk> - 1:27.1-4
+- Make Enchant the default for ispell-program-name when available.
 
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1:27.1-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
