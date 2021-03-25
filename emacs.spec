@@ -4,17 +4,16 @@
 Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
-Version:       27.1
-Release:       5%{?dist}
+Version:       27.2
+Release:       1%{?dist}
 License:       GPLv3+ and CC0-1.0
 URL:           http://www.gnu.org/software/emacs/
 Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
 Source1:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz.sig
 # generate the keyring via:
 # wget https://ftp.gnu.org/gnu/gnu-keyring.gpg
-# gpg2 --import gnu-keyring.gpg
-# gpg2 --armor --export D405AA2C862C54F17EEE6BE0E8BCD7866AFCF978 > gpgkey-D405AA2C862C54F17EEE6BE0E8BCD7866AFCF978.gpg
-Source2:       gpgkey-D405AA2C862C54F17EEE6BE0E8BCD7866AFCF978.gpg
+# gpg2 --keyring ./gnu-keyring.gpg --armor --export E6C9029C363AD41D787A8EBB91C1262F01EB8D39 > gpgkey-E6C9029C363AD41D787A8EBB91C1262F01EB8D39.gpg
+Source2:       gpgkey-E6C9029C363AD41D787A8EBB91C1262F01EB8D39.gpg
 Source3:       emacs.desktop
 Source4:       dotemacs.el
 Source5:       site-start.el
@@ -486,6 +485,9 @@ rm %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document23.svg
 %{_includedir}/emacs-module.h
 
 %changelog
+* Thu Mar 27 2021 Bhavin Gandhi <bhavin7392@gmail.com> - 1:27.2-1
+- emacs-27.2 is available
+
 * Sat Mar 27 2021 Scott Talbert <swt@techie.net> - 1:27.1-5
 - Fix FTBFS with glibc 2.34
 
