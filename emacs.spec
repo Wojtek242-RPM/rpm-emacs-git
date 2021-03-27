@@ -5,7 +5,7 @@ Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
 Version:       27.1
-Release:       4%{?dist}
+Release:       5%{?dist}
 License:       GPLv3+ and CC0-1.0
 URL:           http://www.gnu.org/software/emacs/
 Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
@@ -27,6 +27,7 @@ Source10:      %{name}.appdata.xml
 # rhbz#713600
 Patch1:        emacs-spellchecker.patch
 Patch2:        emacs-system-crypto-policies.patch
+Patch3:        emacs-glibc-2.34.patch
 
 BuildRequires: gcc
 BuildRequires: atk-devel
@@ -190,6 +191,7 @@ Development header files for Emacs.
 
 %patch1 -p1 -b .spellchecker
 %patch2 -p1 -b .system-crypto-policies
+%patch3 -p1 -b .glibc2.34
 autoconf
 
 # We prefer our emacs.desktop file
@@ -484,6 +486,9 @@ rm %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document23.svg
 %{_includedir}/emacs-module.h
 
 %changelog
+* Sat Mar 27 2021 Scott Talbert <swt@techie.net> - 1:27.1-5
+- Fix FTBFS with glibc 2.34
+
 * Fri Feb 05 2021 Peter Oliver <rpm@mavit.org.uk> - 1:27.1-4
 - Make Enchant the default for ispell-program-name when available.
 
