@@ -1,0 +1,30 @@
+From 462ca0654d2aa2a2b6506f2e9a1a9ceb8e683cad Mon Sep 17 00:00:00 2001
+From: Gregory Heytings <gregory@heytings.org>
+Date: Sun, 25 Apr 2021 10:33:48 +0000
+Subject: [PATCH] Fix infloop in Modula-2 mode
+
+* lisp/progmodes/modula2.el (m2-smie-refine-colon): Stop looping when
+point does not move with forward-sexp (Bug#48011)
+---
+ lisp/progmodes/modula2.el | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/lisp/progmodes/modula2.el b/lisp/progmodes/modula2.el
+index 2a0374aa81..5756d91831 100644
+--- a/lisp/progmodes/modula2.el
++++ b/lisp/progmodes/modula2.el
+@@ -201,7 +201,10 @@ m2-smie-refine-colon
+          ((zerop (length tok))
+           (let ((forward-sexp-function nil))
+             (condition-case nil
+-                (forward-sexp -1)
++                (let ((p (point)))
++                  (forward-sexp -1)
++                  (if (= p (point))
++                      (setq res ":")))
+               (scan-error (setq res ":")))))
+          ((member tok '("|" "OF" "..")) (setq res ":-case"))
+          ((member tok '(":" "END" ";" "BEGIN" "VAR" "RECORD" "PROCEDURE"))
+-- 
+2.30.2
+
