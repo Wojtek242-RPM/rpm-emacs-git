@@ -5,7 +5,7 @@ Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
 Version:       27.2
-Release:       2%{?dist}
+Release:       3%{?dist}
 License:       GPLv3+ and CC0-1.0
 URL:           http://www.gnu.org/software/emacs/
 Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
@@ -27,6 +27,7 @@ Patch1:        emacs-spellchecker.patch
 Patch2:        emacs-system-crypto-policies.patch
 Patch3:        emacs-glibc-2.34.patch
 Patch4:        emacs-libdir-vs-systemd.patch
+Patch5:        https://lists.gnu.org/archive/html/bug-gnu-emacs/2021-04/txt0tY7uKvJKS.txt#./emacs-modula2.patch
 
 BuildRequires: gcc
 BuildRequires: atk-devel
@@ -192,6 +193,7 @@ Development header files for Emacs.
 %patch2 -p1 -b .system-crypto-policies
 %patch3 -p1 -b .glibc2.34
 %patch4 -p1 -b .libdir-vs-systemd
+%patch5 -p1
 autoconf
 
 # We prefer our emacs.desktop file
@@ -483,6 +485,10 @@ rm %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document23.svg
 %{_includedir}/emacs-module.h
 
 %changelog
+* Mon Apr 26 2021 Dan Čermák <dan.cermak@cgc-instruments.com> - 1:27.2-3
+- Add emacs-modula2.patch
+- Fixes rhbz#1950158
+
 * Sat Mar 27 2021 Peter Oliver <rpm@mavit.org.uk> - 1:27.2-2
 - Prefer upstream systemd service definition.
 
