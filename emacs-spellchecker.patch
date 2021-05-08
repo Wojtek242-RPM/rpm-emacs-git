@@ -1,20 +1,16 @@
-diff --git a/lisp/textmodes/ispell.el b/lisp/textmodes/ispell.el
-index 65f61644b6..254c3e6a82 100644
 --- a/lisp/textmodes/ispell.el
 +++ b/lisp/textmodes/ispell.el
-@@ -197,14 +197,11 @@ ispell-choices-win-default-height
-   :type 'integer
-   :group 'ispell)
- 
--;; XXX Add enchant to this list once enchant >= 2.1.0 is widespread.
--;; Before that, adding it is useless, as if it is found, it will just
--;; cause an error; and one of the other spelling engines below is
--;; almost certainly installed in any case, for enchant to use.
+@@ -191,12 +191,10 @@
+   :type 'integer)
+
  (defcustom ispell-program-name
 -  (or (executable-find "aspell")
 -      (executable-find "ispell")
 +  (or (executable-find "enchant-2")
        (executable-find "hunspell")
+-      ;; Enchant is commonly installed as `enchant-2', so use this
+-      ;; name and avoid old versions of `enchant'.
+-      (executable-find "enchant-2")
 +      (executable-find "aspell")
 +      (executable-find "ispell")
        "ispell")
