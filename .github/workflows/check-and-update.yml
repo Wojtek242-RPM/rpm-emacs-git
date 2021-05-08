@@ -1,8 +1,6 @@
 name: Check and Update
 
 on:
-  push:
-    branches: [ emacs-git ]
   schedule:
     - cron: "0 1 * * *"
 
