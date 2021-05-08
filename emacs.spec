@@ -204,7 +204,7 @@ Development header files for Emacs.
 
 %patch1 -p1 -b .spellchecker
 %patch2 -p1 -b .system-crypto-policies
-%patch3 -p1 -b .glibc2.34
+# %%patch3 -p1 -b .glibc2.34
 %patch4 -p1 -b .libdir-vs-systemd
 %patch5 -p1
 %patch6 -p1
