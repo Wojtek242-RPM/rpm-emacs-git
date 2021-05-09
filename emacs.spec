@@ -210,6 +210,15 @@ Development header files for Emacs.
 %patch6 -p1
 ./autogen.sh
 
+# Since we are building from the git repo we must also build the info files.
+make docs
+
+# Re-autogen
+mv info temp
+make distclean
+mv temp info
+./autogen.sh
+
 grep -v "tetris.elc" lisp/Makefile.in > lisp/Makefile.in.new \
    && mv lisp/Makefile.in.new lisp/Makefile.in
 grep -v "pong.elc" lisp/Makefile.in > lisp/Makefile.in.new \
@@ -218,9 +227,6 @@ grep -v "pong.elc" lisp/Makefile.in > lisp/Makefile.in.new \
 # Avoid trademark issues
 rm -f lisp/play/tetris.el lisp/play/tetris.elc
 rm -f lisp/play/pong.el lisp/play/pong.el
-
-# Since we are building from the git repo we must also build the info files.
-make docs
 
 # Sorted list of info files
 %define info_files ada-mode auth autotype bovine calc ccmode cl dbus dired-x ebrowse ede ediff edt efaq-w32 efaq eieio eintr elisp emacs-gnutls emacs-mime emacs epa erc ert eshell eudc eww flymake forms gnus htmlfontify idlwave ido info mairix-el message mh-e newsticker nxml-mode octave-mode org pcl-cvs pgg rcirc reftex remember sasl sc semantic ses sieve smtpmail speedbar srecode todo-mode tramp url vhdl-mode vip viper widget wisent woman
