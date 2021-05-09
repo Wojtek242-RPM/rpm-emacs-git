@@ -205,6 +205,15 @@ Development header files for Emacs.
 %patch5 -p1
 ./autogen.sh
 
+# Since we are building from the git repo we must also build the info files.
+make docs
+
+# Re-autogen
+mv info temp
+make distclean
+mv temp info
+./autogen.sh
+
 # We prefer our emacs.desktop file
 cp %SOURCE3 etc/emacs.desktop
 
@@ -216,9 +225,6 @@ grep -v "pong.elc" lisp/Makefile.in > lisp/Makefile.in.new \
 # Avoid trademark issues
 rm -f lisp/play/tetris.el lisp/play/tetris.elc
 rm -f lisp/play/pong.el lisp/play/pong.el
-
-# Since we are building from the git repo we must also build the info files.
-make docs
 
 # Sorted list of info files
 %define info_files ada-mode auth autotype bovine calc ccmode cl dbus dired-x ebrowse ede ediff edt efaq-w32 efaq eieio eintr elisp emacs-gnutls emacs-mime emacs epa erc ert eshell eudc eww flymake forms gnus htmlfontify idlwave ido info mairix-el message mh-e newsticker nxml-mode octave-mode org pcl-cvs pgg rcirc reftex remember sasl sc semantic ses sieve smtpmail speedbar srecode todo-mode tramp url vhdl-mode vip viper widget wisent woman
@@ -507,7 +513,7 @@ rm %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document23.svg
 * Sat Mar 27 2021 Peter Oliver <rpm@mavit.org.uk> - 1:27.2-2
 - Prefer upstream systemd service definition.
 
-* Thu Mar 27 2021 Bhavin Gandhi <bhavin7392@gmail.com> - 1:27.2-1
+* Sat Mar 27 2021 Bhavin Gandhi <bhavin7392@gmail.com> - 1:27.2-1
 - emacs-27.2 is available
 
 * Sat Mar 27 2021 Scott Talbert <swt@techie.net> - 1:27.1-5
