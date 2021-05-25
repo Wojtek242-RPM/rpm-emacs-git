@@ -5,7 +5,7 @@ Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
 Version:       27.2
-Release:       3%{?dist}
+Release:       4%{?dist}
 License:       GPLv3+ and CC0-1.0
 URL:           http://www.gnu.org/software/emacs/
 Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
@@ -14,7 +14,6 @@ Source1:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz.sig
 # wget https://ftp.gnu.org/gnu/gnu-keyring.gpg
 # gpg2 --keyring ./gnu-keyring.gpg --armor --export E6C9029C363AD41D787A8EBB91C1262F01EB8D39 > gpgkey-E6C9029C363AD41D787A8EBB91C1262F01EB8D39.gpg
 Source2:       gpgkey-E6C9029C363AD41D787A8EBB91C1262F01EB8D39.gpg
-Source3:       emacs.desktop
 Source4:       dotemacs.el
 Source5:       site-start.el
 Source6:       default.el
@@ -196,9 +195,6 @@ Development header files for Emacs.
 %patch5 -p1
 autoconf
 
-# We prefer our emacs.desktop file
-cp %SOURCE3 etc/emacs.desktop
-
 grep -v "tetris.elc" lisp/Makefile.in > lisp/Makefile.in.new \
    && mv lisp/Makefile.in.new lisp/Makefile.in
 grep -v "pong.elc" lisp/Makefile.in > lisp/Makefile.in.new \
@@ -372,9 +368,6 @@ rm -f %{buildroot}%{_infodir}/dir
 rm %{buildroot}%{_datadir}/%{name}/%{version}/etc/%{name}.service
 
 # Install desktop files
-mkdir -p %{buildroot}%{_datadir}/applications
-desktop-file-install --dir=%{buildroot}%{_datadir}/applications \
-                     %SOURCE3
 desktop-file-install --dir=%{buildroot}%{_datadir}/applications \
                      %SOURCE7
 
@@ -485,6 +478,9 @@ rm %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document23.svg
 %{_includedir}/emacs-module.h
 
 %changelog
+* Tue May 25 2021 Peter Oliver <rpm@mavit.org.uk> - 1:27.2-4
+- Prefer upstream emacs.desktop.
+
 * Mon Apr 26 2021 Dan Čermák <dan.cermak@cgc-instruments.com> - 1:27.2-3
 - Add emacs-modula2.patch
 - Fixes rhbz#1950158
