@@ -364,12 +364,12 @@ install -p -m 755 %SOURCE8 %{buildroot}%{_bindir}/emacs-terminal
 # After everything is installed, remove info dir
 rm -f %{buildroot}%{_infodir}/dir
 
-# Remove duplicate emacs.service file
-rm %{buildroot}%{_datadir}/%{name}/%{version}/etc/%{name}.service
-
 # Install desktop files
 desktop-file-install --dir=%{buildroot}%{_datadir}/applications \
                      %SOURCE7
+
+# Remove duplicate desktop-related files
+rm %{buildroot}%{_datadir}/%{name}/%{version}/etc/%{name}.{desktop,service}
 
 #
 # Create file lists
@@ -480,6 +480,7 @@ rm %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document23.svg
 %changelog
 * Tue May 25 2021 Peter Oliver <rpm@mavit.org.uk> - 1:27.2-4
 - Prefer upstream emacs.desktop.
+- Remove duplicate emacs.desktop from /usr/share/emacs/27.2/etc/.
 
 * Mon Apr 26 2021 Dan Čermák <dan.cermak@cgc-instruments.com> - 1:27.2-3
 - Add emacs-modula2.patch
