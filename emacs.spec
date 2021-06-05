@@ -5,7 +5,7 @@ Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
 Version:       27.2
-Release:       4%{?dist}
+Release:       5%{?dist}
 License:       GPLv3+ and CC0-1.0
 URL:           http://www.gnu.org/software/emacs/
 Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
@@ -64,6 +64,7 @@ BuildRequires: cairo
 BuildRequires: texinfo
 BuildRequires: gzip
 BuildRequires: desktop-file-utils
+BuildRequires: libappstream-glib
 BuildRequires: libacl-devel
 BuildRequires: harfbuzz-devel
 BuildRequires: jansson-devel
@@ -352,7 +353,7 @@ install -p -m 0644 emacs.pc %{buildroot}/%{pkgconfig}
 mkdir -p %{buildroot}/%{_datadir}/appdata
 cp -a %SOURCE10 %{buildroot}/%{_datadir}/appdata
 # Upstream ships its own appdata file, but it's quite terse.
-rm %{buildroot}/%{_datadir}/metainfo/emacs.appdata.xml
+rm %{buildroot}/%{_metainfodir}/emacs.appdata.xml
 
 # Install rpm macro definition file
 mkdir -p %{buildroot}%{_rpmconfigdir}/macros.d
@@ -394,6 +395,7 @@ cat el-*-files common-lisp-dir-files > el-filelist
 rm %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document23.svg
 
 %check
+appstream-util validate-relax --nonet %{buildroot}%{_datadir}/appdata/*.appdata.xml
 desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 
 %preun
@@ -481,6 +483,9 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_includedir}/emacs-module.h
 
 %changelog
+* Sat Jun  5 2021 Peter Oliver <rpm@mavit.org.uk> - 1:27.2-5
+- Validate AppStream metainfo.
+
 * Tue May 25 2021 Peter Oliver <rpm@mavit.org.uk> - 1:27.2-4
 - Prefer upstream emacs.desktop.
 - Remove duplicate emacs.desktop from /usr/share/emacs/27.2/etc/.
