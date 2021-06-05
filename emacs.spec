@@ -416,6 +416,9 @@ cat el-*-files common-lisp-dir-files > el-filelist
 # Remove old icon
 rm %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document23.svg
 
+%check
+desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
+
 %preun
 %{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version}
 
