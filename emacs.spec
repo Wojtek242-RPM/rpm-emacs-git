@@ -5,7 +5,7 @@ Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
 Version:       27.2
-Release:       2%{?dist}
+Release:       3%{?dist}
 License:       GPLv3+ and CC0-1.0
 URL:           http://www.gnu.org/software/emacs/
 Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
@@ -400,33 +400,33 @@ cat el-*-files common-lisp-dir-files > el-filelist
 rm %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document23.svg
 
 %preun
-%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version}
+%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version} || :
 
 %posttrans
-%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version} 80
+%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version} 80 || :
 
 %preun lucid
-%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version}-lucid
-%{_sbindir}/alternatives --remove emacs-lucid %{_bindir}/emacs-%{version}-lucid
+%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version}-lucid || :
+%{_sbindir}/alternatives --remove emacs-lucid %{_bindir}/emacs-%{version}-lucid || :
 
 %posttrans lucid
-%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version}-lucid 70
-%{_sbindir}/alternatives --install %{_bindir}/emacs-lucid emacs-lucid %{_bindir}/emacs-%{version}-lucid 60
+%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version}-lucid 70 || :
+%{_sbindir}/alternatives --install %{_bindir}/emacs-lucid emacs-lucid %{_bindir}/emacs-%{version}-lucid 60 || :
 
 %preun nox
-%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version}-nox
-%{_sbindir}/alternatives --remove emacs-nox %{_bindir}/emacs-%{version}-nox
+%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version}-nox || :
+%{_sbindir}/alternatives --remove emacs-nox %{_bindir}/emacs-%{version}-nox || :
 
 %posttrans nox
-%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version}-nox 70
-%{_sbindir}/alternatives --install %{_bindir}/emacs-nox emacs-nox %{_bindir}/emacs-%{version}-nox 60
+%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version}-nox 70 || :
+%{_sbindir}/alternatives --install %{_bindir}/emacs-nox emacs-nox %{_bindir}/emacs-%{version}-nox 60 || :
 
 %preun common
-%{_sbindir}/alternatives --remove emacs.etags %{_bindir}/etags.emacs
+%{_sbindir}/alternatives --remove emacs.etags %{_bindir}/etags.emacs || :
 
 %posttrans common
 %{_sbindir}/alternatives --install %{_bindir}/etags emacs.etags %{_bindir}/etags.emacs 80 \
-       --slave %{_mandir}/man1/etags.1.gz emacs.etags.man %{_mandir}/man1/etags.emacs.1.gz
+       --slave %{_mandir}/man1/etags.1.gz emacs.etags.man %{_mandir}/man1/etags.emacs.1.gz || :
 
 %files
 %{_bindir}/emacs-%{version}
@@ -484,6 +484,10 @@ rm %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document23.svg
 %{_includedir}/emacs-module.h
 
 %changelog
+* Sun Jun 13 2021 Dan Čermák <dan.cermak@cgc-instruments.com> - 1:27.2-3
+- Swallow %%preun and %%posttrans scriptlet exit status
+- Fixes rhbz#1962181
+
 * Mon Apr 26 2021 Dan Čermák <dan.cermak@cgc-instruments.com> - 1:27.2-2
 - Add emacs-modula2.patch
 - Fixes rhbz#1950158
