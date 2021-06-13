@@ -422,33 +422,33 @@ appstream-util validate-relax --nonet %{buildroot}%{_datadir}/appdata/*.appdata.
 desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 
 %preun
-%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version}
+%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version} || :
 
 %posttrans
-%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version} 80
+%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version} 80 || :
 
 %preun lucid
-%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version}-lucid
-%{_sbindir}/alternatives --remove emacs-lucid %{_bindir}/emacs-%{version}-lucid
+%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version}-lucid || :
+%{_sbindir}/alternatives --remove emacs-lucid %{_bindir}/emacs-%{version}-lucid || :
 
 %posttrans lucid
-%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version}-lucid 70
-%{_sbindir}/alternatives --install %{_bindir}/emacs-lucid emacs-lucid %{_bindir}/emacs-%{version}-lucid 60
+%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version}-lucid 70 || :
+%{_sbindir}/alternatives --install %{_bindir}/emacs-lucid emacs-lucid %{_bindir}/emacs-%{version}-lucid 60 || :
 
 %preun nox
-%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version}-nox
-%{_sbindir}/alternatives --remove emacs-nox %{_bindir}/emacs-%{version}-nox
+%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version}-nox || :
+%{_sbindir}/alternatives --remove emacs-nox %{_bindir}/emacs-%{version}-nox || :
 
 %posttrans nox
-%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version}-nox 70
-%{_sbindir}/alternatives --install %{_bindir}/emacs-nox emacs-nox %{_bindir}/emacs-%{version}-nox 60
+%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version}-nox 70 || :
+%{_sbindir}/alternatives --install %{_bindir}/emacs-nox emacs-nox %{_bindir}/emacs-%{version}-nox 60 || :
 
 %preun common
-%{_sbindir}/alternatives --remove emacs.etags %{_bindir}/etags.emacs
+%{_sbindir}/alternatives --remove emacs.etags %{_bindir}/etags.emacs || :
 
 %posttrans common
 %{_sbindir}/alternatives --install %{_bindir}/etags emacs.etags %{_bindir}/etags.emacs 80 \
-       --slave %{_mandir}/man1/etags.1.gz emacs.etags.man %{_mandir}/man1/etags.emacs.1.gz
+       --slave %{_mandir}/man1/etags.1.gz emacs.etags.man %{_mandir}/man1/etags.emacs.1.gz || :
 
 %files
 %{_bindir}/emacs-%{version}
@@ -507,6 +507,10 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_includedir}/emacs-module.h
 
 %changelog
+* Sun Jun 13 2021 Dan Čermák <dan.cermak@cgc-instruments.com> - 1:27.2-6
+- Swallow %%preun and %%posttrans scriptlet exit status
+- Fixes rhbz#1962181
+
 * Sat Jun  5 2021 Peter Oliver <rpm@mavit.org.uk> - 1:27.2-5
 - Validate AppStream metainfo.
 
