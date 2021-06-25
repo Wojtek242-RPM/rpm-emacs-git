@@ -492,7 +492,7 @@ rm %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document23.svg
 - Add emacs-modula2.patch
 - Fixes rhbz#1950158
 
-* Thu Mar 27 2021 Bhavin Gandhi <bhavin7392@gmail.com> - 1:27.2-1
+* Thu Mar 25 2021 Bhavin Gandhi <bhavin7392@gmail.com> - 1:27.2-1
 - emacs-27.2 is available
 
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1:27.1-3
