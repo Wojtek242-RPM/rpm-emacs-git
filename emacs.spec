@@ -501,11 +501,11 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 * Sat Mar 27 2021 Peter Oliver <rpm@mavit.org.uk> - 1:27.2-2
 - Prefer upstream systemd service definition.
 
-* Thu Mar 27 2021 Bhavin Gandhi <bhavin7392@gmail.com> - 1:27.2-1
-- emacs-27.2 is available
-
 * Sat Mar 27 2021 Scott Talbert <swt@techie.net> - 1:27.1-5
 - Fix FTBFS with glibc 2.34
+
+* Thu Mar 25 2021 Bhavin Gandhi <bhavin7392@gmail.com> - 1:27.2-1
+- emacs-27.2 is available
 
 * Fri Feb 05 2021 Peter Oliver <rpm@mavit.org.uk> - 1:27.1-4
 - Make Enchant the default for ispell-program-name when available.
