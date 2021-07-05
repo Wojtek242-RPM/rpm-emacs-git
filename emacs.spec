@@ -327,6 +327,7 @@ touch %{buildroot}%{_bindir}/emacs
 
 # Remove the emacsclient desktop file
 rm %{buildroot}%{_datadir}/applications/emacsclient.desktop
+rm %{buildroot}%{_datadir}/applications/emacsclient-mail.desktop
 
 # Remove emacs.pdmp from common
 rm %{buildroot}%{emacs_libexecdir}/emacs.pdmp
@@ -379,7 +380,7 @@ install -p -m 0644 emacs.pc %{buildroot}/%{pkgconfig}
 mkdir -p %{buildroot}/%{_datadir}/appdata
 cp -a %SOURCE10 %{buildroot}/%{_datadir}/appdata
 # Upstream ships its own appdata file, but it's quite terse.
-rm %{buildroot}/%{_metainfodir}/emacs.appdata.xml
+rm %{buildroot}/%{_metainfodir}/emacs.metainfo.xml
 
 # Install rpm macro definition file
 mkdir -p %{buildroot}%{_rpmconfigdir}/macros.d
@@ -458,6 +459,7 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_bindir}/emacs-%{version}.pdmp
 %attr(0755,-,-) %ghost %{_bindir}/emacs
 %{_datadir}/applications/emacs.desktop
+%{_datadir}/applications/emacs-mail.desktop
 %{_datadir}/appdata/%{name}.appdata.xml
 %{_datadir}/icons/hicolor/*/apps/emacs.png
 %{_datadir}/icons/hicolor/scalable/apps/emacs.svg
