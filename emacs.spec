@@ -10,7 +10,7 @@ Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
 Version:       28.0.50
-Release:       237.%{build_timestamp}git%{git_revision_short}%{?dist}
+Release:       238.%{build_timestamp}git%{git_revision_short}%{?dist}
 License:       GPLv3+ and CC0-1.0
 URL:           http://www.gnu.org/software/emacs/
 Source0:       https://github.com/emacs-mirror/emacs/archive/%{git_revision}.tar.gz#/%{name}-%{version}-%{git_revision}.tar.gz
@@ -19,7 +19,6 @@ Source0:       https://github.com/emacs-mirror/emacs/archive/%{git_revision}.tar
 # wget https://ftp.gnu.org/gnu/gnu-keyring.gpg
 # gpg2 --keyring ./gnu-keyring.gpg --armor --export E6C9029C363AD41D787A8EBB91C1262F01EB8D39 > gpgkey-E6C9029C363AD41D787A8EBB91C1262F01EB8D39.gpg
 # Source2:       gpgkey-E6C9029C363AD41D787A8EBB91C1262F01EB8D39.gpg
-Source3:       emacs.desktop
 Source4:       dotemacs.el
 Source5:       site-start.el
 Source6:       default.el
@@ -70,6 +69,7 @@ BuildRequires: cairo
 BuildRequires: texinfo
 BuildRequires: gzip
 BuildRequires: desktop-file-utils
+BuildRequires: libappstream-glib
 BuildRequires: libacl-devel
 BuildRequires: harfbuzz-devel
 BuildRequires: jansson-devel
@@ -213,9 +213,6 @@ mv info temp
 make distclean
 mv temp info
 ./autogen.sh
-
-# We prefer our emacs.desktop file
-cp %SOURCE3 etc/emacs.desktop
 
 grep -v "tetris.elc" lisp/Makefile.in > lisp/Makefile.in.new \
    && mv lisp/Makefile.in.new lisp/Makefile.in
@@ -379,7 +376,7 @@ install -p -m 0644 emacs.pc %{buildroot}/%{pkgconfig}
 mkdir -p %{buildroot}/%{_datadir}/appdata
 cp -a %SOURCE10 %{buildroot}/%{_datadir}/appdata
 # Upstream ships its own appdata file, but it's quite terse.
-rm %{buildroot}/%{_datadir}/metainfo/emacs.metainfo.xml
+rm %{buildroot}/%{_metainfodir}/emacs.metainfo.xml
 
 # Install rpm macro definition file
 mkdir -p %{buildroot}%{_rpmconfigdir}/macros.d
@@ -391,15 +388,12 @@ install -p -m 755 %SOURCE8 %{buildroot}%{_bindir}/emacs-terminal
 # After everything is installed, remove info dir
 rm -f %{buildroot}%{_infodir}/dir
 
-# Remove duplicate emacs.service file
-rm %{buildroot}%{_datadir}/%{name}/%{version}/etc/%{name}.service
-
 # Install desktop files
-mkdir -p %{buildroot}%{_datadir}/applications
-desktop-file-install --dir=%{buildroot}%{_datadir}/applications \
-                     %SOURCE3
 desktop-file-install --dir=%{buildroot}%{_datadir}/applications \
                      %SOURCE7
+
+# Remove duplicate desktop-related files
+rm %{buildroot}%{_datadir}/%{name}/%{version}/etc/%{name}.{desktop,service}
 
 #
 # Create file lists
@@ -423,34 +417,38 @@ cat el-*-files common-lisp-dir-files > el-filelist
 # Remove old icon
 rm %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document23.svg
 
+%check
+appstream-util validate-relax --nonet %{buildroot}%{_datadir}/appdata/*.appdata.xml
+desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
+
 %preun
-%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version}
+%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version} || :
 
 %posttrans
-%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version} 80
+%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version} 80 || :
 
 %preun lucid
-%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version}-lucid
-%{_sbindir}/alternatives --remove emacs-lucid %{_bindir}/emacs-%{version}-lucid
+%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version}-lucid || :
+%{_sbindir}/alternatives --remove emacs-lucid %{_bindir}/emacs-%{version}-lucid || :
 
 %posttrans lucid
-%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version}-lucid 70
-%{_sbindir}/alternatives --install %{_bindir}/emacs-lucid emacs-lucid %{_bindir}/emacs-%{version}-lucid 60
+%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version}-lucid 70 || :
+%{_sbindir}/alternatives --install %{_bindir}/emacs-lucid emacs-lucid %{_bindir}/emacs-%{version}-lucid 60 || :
 
 %preun nox
-%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version}-nox
-%{_sbindir}/alternatives --remove emacs-nox %{_bindir}/emacs-%{version}-nox
+%{_sbindir}/alternatives --remove emacs %{_bindir}/emacs-%{version}-nox || :
+%{_sbindir}/alternatives --remove emacs-nox %{_bindir}/emacs-%{version}-nox || :
 
 %posttrans nox
-%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version}-nox 70
-%{_sbindir}/alternatives --install %{_bindir}/emacs-nox emacs-nox %{_bindir}/emacs-%{version}-nox 60
+%{_sbindir}/alternatives --install %{_bindir}/emacs emacs %{_bindir}/emacs-%{version}-nox 70 || :
+%{_sbindir}/alternatives --install %{_bindir}/emacs-nox emacs-nox %{_bindir}/emacs-%{version}-nox 60 || :
 
 %preun common
-%{_sbindir}/alternatives --remove emacs.etags %{_bindir}/etags.emacs
+%{_sbindir}/alternatives --remove emacs.etags %{_bindir}/etags.emacs || :
 
 %posttrans common
 %{_sbindir}/alternatives --install %{_bindir}/etags emacs.etags %{_bindir}/etags.emacs 80 \
-       --slave %{_mandir}/man1/etags.1.gz emacs.etags.man %{_mandir}/man1/etags.emacs.1.gz
+       --slave %{_mandir}/man1/etags.1.gz emacs.etags.man %{_mandir}/man1/etags.emacs.1.gz || :
 
 %files
 %{_bindir}/emacs-%{version}
@@ -509,6 +507,17 @@ rm %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/emacs-document23.svg
 %{_includedir}/emacs-module.h
 
 %changelog
+* Sun Jun 13 2021 Dan Čermák <dan.cermak@cgc-instruments.com> - 1:27.2-6
+- Swallow %%preun and %%posttrans scriptlet exit status
+- Fixes rhbz#1962181
+
+* Sat Jun  5 2021 Peter Oliver <rpm@mavit.org.uk> - 1:27.2-5
+- Validate AppStream metainfo.
+
+* Tue May 25 2021 Peter Oliver <rpm@mavit.org.uk> - 1:27.2-4
+- Prefer upstream emacs.desktop.
+- Remove duplicate emacs.desktop from /usr/share/emacs/27.2/etc/.
+
 * Mon Apr 26 2021 Dan Čermák <dan.cermak@cgc-instruments.com> - 1:27.2-3
 - Add emacs-modula2.patch
 - Fixes rhbz#1950158
