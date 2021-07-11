@@ -5,7 +5,7 @@ Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
 Version:       27.2
-Release:       6%{?dist}
+Release:       7%{?dist}
 License:       GPLv3+ and CC0-1.0
 URL:           http://www.gnu.org/software/emacs/
 Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
@@ -27,6 +27,8 @@ Patch2:        emacs-system-crypto-policies.patch
 Patch3:        emacs-glibc-2.34.patch
 Patch4:        emacs-libdir-vs-systemd.patch
 Patch5:        https://lists.gnu.org/archive/html/bug-gnu-emacs/2021-04/txt0tY7uKvJKS.txt#./emacs-modula2.patch
+# cherry picked from 216c65b135c2b0be7e048cdc6683873b03b99b9a
+Patch6:        Use-a-64KB-page-size-for-pdump.patch
 
 BuildRequires: gcc
 BuildRequires: atk-devel
@@ -194,6 +196,7 @@ Development header files for Emacs.
 %patch3 -p1 -b .glibc2.34
 %patch4 -p1 -b .libdir-vs-systemd
 %patch5 -p1
+%patch6 -p1
 autoconf
 
 grep -v "tetris.elc" lisp/Makefile.in > lisp/Makefile.in.new \
@@ -483,6 +486,10 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_includedir}/emacs-module.h
 
 %changelog
+* Sun Jul 11 2021 Dan Čermák <dan.cermak@cgc-instruments.com> - 1:27.2-7
+- Add patch to fix pdump page size incompatibility
+- Fixes rhbz#1974244
+
 * Sun Jun 13 2021 Dan Čermák <dan.cermak@cgc-instruments.com> - 1:27.2-6
 - Swallow %%preun and %%posttrans scriptlet exit status
 - Fixes rhbz#1962181

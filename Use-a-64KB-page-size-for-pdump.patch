@@ -1,0 +1,26 @@
+commit 216c65b135c2b0be7e048cdc6683873b03b99b9a
+Author: Lars Ingebrigtsen <larsi@gnus.org>
+Date:   Sun Mar 28 19:13:00 2021 +0200
+
+    Use a 64KB page size for pdump
+    
+    * src/pdumper.c (dump_get_page_size): Use a 64KB page size on all
+    architectures, as this many vary between systems (bug#47125).
+
+diff --git a/src/pdumper.c b/src/pdumper.c
+index 337742fda4..fdd9b3bacb 100644
+--- a/src/pdumper.c
++++ b/src/pdumper.c
+@@ -162,11 +162,7 @@ ptrdiff_t_to_dump_off (ptrdiff_t value)
+ static int
+ dump_get_page_size (void)
+ {
+-#if defined (WINDOWSNT) || defined (CYGWIN)
+-  return 64 * 1024;  /* Worst-case allocation granularity.  */
+-#else
+-  return getpagesize ();
+-#endif
++  return 64 * 1024;
+ }
+ 
+ #define dump_offsetof(type, member)                             \
