@@ -5,7 +5,7 @@ Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
 Version:       27.2
-Release:       8%{?dist}
+Release:       9%{?dist}
 License:       GPLv3+ and CC0-1.0
 URL:           http://www.gnu.org/software/emacs/
 Source0:       https://ftp.gnu.org/gnu/emacs/emacs-%{version}.tar.xz
@@ -85,7 +85,8 @@ BuildRequires: util-linux
 %endif
 BuildRequires: make
 
-
+# Emacs requires info for info mode, rhbz#1989264
+Requires:      info
 # Emacs doesn't run without dejavu-sans-mono-fonts, rhbz#732422
 Requires:      desktop-file-utils
 Requires:      dejavu-sans-mono-fonts
@@ -486,6 +487,10 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_includedir}/emacs-module.h
 
 %changelog
+* Sat Aug  7 2021 Dan Čermák <dan.cermak@cgc-instruments.com> - 1:27.2-9
+- Add Requires: info to fix info-mode
+- Fixes rhbz#1989264
+
 * Wed Jul 21 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1:27.2-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
