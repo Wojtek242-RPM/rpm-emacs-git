@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 SPEC_GIT_REVISION=`grep "%define git_revision[^_]" emacs.spec | cut -d " " -f 3`
-REMOTE_GIT_REVISION=`git ls-remote git://github.com/emacs-mirror/emacs.git refs/heads/master | cut -f 1`
+REMOTE_GIT_REVISION=`git ls-remote https://github.com/emacs-mirror/emacs.git refs/heads/master | cut -f 1`
 
 if [ "${SPEC_GIT_REVISION}" = "${REMOTE_GIT_REVISION}" ]
 then
