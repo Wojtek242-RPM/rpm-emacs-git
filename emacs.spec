@@ -9,7 +9,7 @@
 Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
-Version:       28.0.50
+Version:       29.0.50
 Release:       360.%{build_timestamp}git%{git_revision_short}%{?dist}
 License:       GPLv3+ and CC0-1.0
 URL:           http://www.gnu.org/software/emacs/
@@ -19,7 +19,7 @@ Source0:       https://github.com/emacs-mirror/emacs/archive/%{git_revision}.tar
 # wget https://ftp.gnu.org/gnu/gnu-keyring.gpg
 # gpg2 --keyring ./gnu-keyring.gpg --armor --export E6C9029C363AD41D787A8EBB91C1262F01EB8D39 > gpgkey-E6C9029C363AD41D787A8EBB91C1262F01EB8D39.gpg
 # Source2:       gpgkey-E6C9029C363AD41D787A8EBB91C1262F01EB8D39.gpg
-Source3:       emacs.desktop
+# Source3:       emacs.desktop
 Source4:       dotemacs.el
 Source5:       site-start.el
 Source6:       default.el
@@ -208,7 +208,8 @@ Development header files for Emacs.
 ./autogen.sh
 
 # Since we are building from the git repo we must also build the info files.
-make docs
+# `make docs || make docs` looks stupid, but works
+make docs || make docs || make docs
 
 # Re-autogen
 mv info temp
@@ -332,8 +333,8 @@ touch %{buildroot}%{_bindir}/emacs
 rm %{buildroot}%{_datadir}/applications/emacsclient.desktop
 rm %{buildroot}%{_datadir}/applications/emacsclient-mail.desktop
 
-# Remove emacs.pdmp from common
-rm %{buildroot}%{emacs_libexecdir}/emacs.pdmp
+# # Remove emacs.pdmp from common
+# rm %%{buildroot}%%{emacs_libexecdir}/emacs.pdmp
 
 # Do not compress the files which implement compression itself (#484830)
 gunzip %{buildroot}%{_datadir}/emacs/%{version}/lisp/jka-compr.el.gz
