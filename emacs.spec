@@ -33,6 +33,7 @@ Patch2:        emacs-system-crypto-policies.patch
 Patch3:        emacs-glibc-2.34.patch
 Patch4:        emacs-libdir-vs-systemd.patch
 # Patch5:        https://lists.gnu.org/archive/html/bug-gnu-emacs/2021-04/txt0tY7uKvJKS.txt#./emacs-modula2.patch
+# Patch6:        Use-a-64KB-page-size-for-pdump.patch
 
 BuildRequires: gcc
 BuildRequires: atk-devel
@@ -205,6 +206,7 @@ Development header files for Emacs.
 # %%patch3 -p1 -b .glibc2.34
 %patch4 -p1 -b .libdir-vs-systemd
 # %%patch5 -p1
+# %%patch6 -p1
 ./autogen.sh
 
 # Since we are building from the git repo we must also build the info files.
