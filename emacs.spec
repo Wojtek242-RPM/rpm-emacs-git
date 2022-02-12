@@ -2,7 +2,7 @@
 
 %define build_timestamp %(date +"%Y%m%d")
 
-%define git_revision 2469e036035f8f5baa78e1557c61df019d8fd572
+%define git_revision f622034fa565a50f9c210301aba2545b2521f356
 %define git_revision_short %(echo %{git_revision} | head -c 14)
 
 # This file is encoded in UTF-8.  -*- coding: utf-8 -*-
@@ -10,7 +10,7 @@ Summary:       GNU Emacs text editor
 Name:          emacs
 Epoch:         1
 Version:       29.0.50
-Release:       97.%{build_timestamp}git%{git_revision_short}%{?dist}
+Release:       98.%{build_timestamp}git%{git_revision_short}%{?dist}
 License:       GPLv3+ and CC0-1.0
 URL:           http://www.gnu.org/software/emacs/
 Source0:       https://github.com/emacs-mirror/emacs/archive/%{git_revision}.tar.gz#/%{name}-%{version}-%{git_revision}.tar.gz
